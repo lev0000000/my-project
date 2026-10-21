@@ -16,7 +16,7 @@ class ArticleSeeder extends Seeder
     {
         $categoryIds = Category::pluck('id');
 
-        Article::factory(10000)
+        Article::factory(5000)
             ->create()
             ->each(function (Article $article) use ($categoryIds) {
                 $categories = $categoryIds
