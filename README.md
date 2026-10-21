@@ -1,58 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Articles REST API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API на Laravel для работы со статьями, авторами и категориями.
 
-## About Laravel
+## Стек
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3+, Laravel 13
+- SQLite, Eloquent ORM
+- Nested Set (`kalnoy/nestedset`)
+- L5-Swagger (OpenAPI)
+- PHPUnit, Laravel Pint
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Установка и запуск
 
 ```bash
-composer require laravel/boost --dev
+git clone <REPOSITORY_URL>
+cd my-project
 
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+В `.env` указать:
 
-## Contributing
+```dotenv
+DB_CONNECTION=sqlite
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Создание БД и генерация тестовых данных:
 
-## Code of Conduct
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Генерация Swagger и запуск сервера:
 
-## Security Vulnerabilities
+```bash
+php artisan l5-swagger:generate
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**API:** http://127.0.0.1:8000/api
 
-## License
+**Swagger:** http://127.0.0.1:8000/api/documentation
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## API
+
+| Метод | Endpoint | Описание |
+|---|---|---|
+| GET | `/api/authors` | Список и поиск авторов |
+| GET | `/api/authors/{id}` | Автор по ID |
+| GET | `/api/authors/slug/{slug}` | Автор по slug |
+| GET | `/api/categories` | Список категорий |
+| GET | `/api/categories/tree` | Дерево категорий |
+| GET | `/api/categories/{id}` | Категория по ID |
+| GET | `/api/categories/slug/{slug}` | Категория по slug |
+| GET | `/api/articles` | Список и поиск статей |
+| GET | `/api/articles/{id}` | Статья по ID |
+| GET | `/api/articles/slug/{slug}` | Статья по slug |
+
+Поддерживаются фильтрация, поиск, пагинация и сортировка.
+
+Пример:
+
+```http
+GET /api/articles?q=Laravel&author_id=5&per_page=10
+```
+
+## Тестирование
+
+```bash
+php artisan test
+```
+
+Проверка стиля кода:
+
+```bash
+./vendor/bin/pint --test
+```
+
+## Особенности
+
+- Генерация 10 000 статей через Factories и Seeders.
+- Вложенные категории через Nested Set.
+- Автоматическая генерация уникальных slug.
+- Связи One-to-Many и Many-to-Many.
+- JSON API Resources и Swagger-документация.
+- Feature-тесты основных API.
