@@ -32,8 +32,9 @@ class Article extends Model
                 return;
             }
 
+            $count = 1;
             $name = Str::slug($article->title);
-            $article->slug = $name . $article->author;
+            $article->slug = $name . $count++ ;
         });
     }
 
