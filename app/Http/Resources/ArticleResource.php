@@ -7,13 +7,25 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'image' => $this->image,
+            'excerpt' => $this->excerpt,
+            'content' => $this->content,
+
+            'author' => new AuthorResource(
+                $this->whenLoaded('author')
+            ),
+
+            'categories' => CategoryResource::collection(
+                $this->whenLoaded('categories')
+            ),
+
+            'created_at' => $this->created_at,
+        ];
     }
 }

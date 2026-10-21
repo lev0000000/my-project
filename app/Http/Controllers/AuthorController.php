@@ -20,7 +20,7 @@ class AuthorController extends Controller
         $authors = Author::query()
             ->when(
                 !empty($data['last_name']),
-                fn ($query) => $query->where(
+                fn($query) => $query->where(
                     'last_name',
                     'like',
                     '%' . $data['last_name'] . '%'
